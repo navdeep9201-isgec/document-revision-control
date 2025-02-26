@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scan Document</title>
+</head>
+<body>
+  <h1>Scan Document</h1>
+  <p id="result"></p>
+
+  <script>
+    // Extract document ID and revision number from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const documentId = urlParams.get('documentId');
+    const revisionNo = parseInt(urlParams.get('revisionNo'));
+
+    // Fetch the JSON data from GitHub
+    fetch('https://raw.githubusercontent.com/navdeep9201-isgec/document-revision-control/main/data.json')
+      .then(response => response.json())
+      .then(data => {
+        const document = data.documents.find(doc => doc.documentId === documentId);
+        if (document) {
+          if (document.revisionNo === revisionNo) {
+            document.getElementById('result').innerText = 'This is the latest revision.';
+          } else {
+            document.getElementById('result').innerText = 'This revision is outdated.';
+          }
+        } else {
+          document.getElementById('result').innerText = 'Document not found.';
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  </script>
+</body>
+</html>
